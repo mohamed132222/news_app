@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheming.lightTheme,
       darkTheme: AppTheming.darkTheme,
       themeMode: ThemeMode.dark,
+
       initialRoute: AppRouting.homeScreenRoute,
       routes: {AppRouting.homeScreenRoute: (context) => HomeScreen()},
     );
