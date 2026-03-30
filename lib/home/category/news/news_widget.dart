@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/home/category/news/news_item.dart';
+import 'package:news_app/utils/app_text.dart';
 import 'package:news_app/widget/main_loading_widget.dart';
 
 import '../../../api/api_manager.dart';
@@ -41,10 +42,19 @@ class _NewsWidgetState extends State<NewsWidget> {
           );
         }
         var newsList = snapshot.data?.articles ?? [];
-        return ListView.builder(
-          itemBuilder: (context, index) => NewsItem(news: newsList[index]),
-          itemCount: newsList.length,
-        );
+        if (newsList.isEmpty) {
+          return Center(
+            child: Text(
+              "The News List Is Empty",
+              style: AppText.medium24white500,
+            ),
+          );
+        } else {
+          return ListView.builder(
+            itemBuilder: (context, index) => NewsItem(news: newsList[index]),
+            itemCount: newsList.length,
+          );
+        }
       },
     );
   }

@@ -8,7 +8,9 @@ import 'drawer_divider.dart';
 import 'drawer_item.dart';
 
 class DrawerHome extends StatelessWidget {
-  const DrawerHome({super.key});
+  VoidCallback OnDrawerClick;
+
+  DrawerHome({required this.OnDrawerClick});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,12 @@ class DrawerHome extends StatelessWidget {
             color: AppColor.white,
             child: Text("News App", style: AppText.bold24black700),
           ),
-          DrawerItem(title: "Home", image: AppAsset.iconHome),
+          InkWell(
+            onTap: () {
+              OnDrawerClick();
+            },
+            child: DrawerItem(title: "Home", image: AppAsset.iconHome),
+          ),
 
           DrawerDivider(),
           DrawerItem(title: "Them", image: AppAsset.iconTheme),
