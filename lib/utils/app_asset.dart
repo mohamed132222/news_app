@@ -7,4 +7,15 @@ class AppAsset {
   static const String science = "assets/images/science.png";
   static const String sports = "assets/images/sports.png";
   static const String technology = "assets/images/technology.png";
+  static const String businessDark = "assets/images/business_dark.png";
+  static const String entertainmentDark =
+      "assets/images/entertainment_dark.png";
+  static const String generalDark = "assets/images/general_dark.png";
+  static const String healthDark = "assets/images/health_dark.png";
+  static const String scienceDark = "assets/images/science_dark.png";
+  static const String sportsDark = "assets/images/sports_dark.png";
+  static const String technologyDark = "assets/images/technology_dark.png";
+  static const String iconHome = "assets/images/icon_home.png";
+  static const String iconTheme = "assets/images/icon_theme.png";
+  static const String iconLanguage = "assets/images/icon_language.png";
 }
