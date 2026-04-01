@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/home/home_screen.dart';
-import 'package:news_app/utils/app_routing.dart';
-import 'package:news_app/utils/app_theming.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'core/utils/app_routing.dart';
+import 'core/utils/app_theming.dart';
+import 'core/utils/bloc_observer.dart';
+import 'feature/home/home_screen.dart';
 
 void main() {
+  Bloc.observer = MyBlocObserver();
   runApp(MyApp());
 }
 
