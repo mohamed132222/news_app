@@ -8,17 +8,10 @@ import 'package:news_app/feature/home/category_details/presentation/view_model/c
 import '../../../../../core/api/dio/dio_manager.dart';
 
 class CategoryDetailsViewModel extends Cubit<CategoryDetailsState> {
-  late SourceRepository sourceRepository;
-  late SourceRemoteDataSource sourceRemoteDataSource;
-  late DioManager dioManager;
+  SourceRepository sourceRepository;
 
-  CategoryDetailsViewModel() : super(CategoryDetailsLoadingState()) {
-    dioManager = DioManager();
-    sourceRemoteDataSource = SourceRemoteDataSourceImpl(dioManager: dioManager);
-    sourceRepository = SourceRepositoryImpl(
-      sourceRemoteDataSource: sourceRemoteDataSource,
-    );
-  }
+  CategoryDetailsViewModel({required this.sourceRepository})
+    : super(CategoryDetailsLoadingState());
 
   getSources(String categoryId) async {
     try {

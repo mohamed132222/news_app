@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/di/di.dart';
 import 'package:news_app/feature/home/category_details/presentation/view/source/presentation/view/source_widget.dart';
 import 'package:news_app/feature/home/category_details/presentation/view_model/category_details_state.dart';
 import 'package:news_app/feature/home/category_details/presentation/view_model/category_details_view_model.dart';
@@ -21,15 +22,17 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: CategoryDetailsViewModel()..getSources(widget.category.id),
+      bloc: CategoryDetailsViewModel(sourceRepository: sourceRepositoryInject())
+        ..getSources(widget.category.id),
       builder: (context, state) {
         if (state is CategoryDetailsLoadingState) {
           return MainLoadingWidget();
         } else if (state is CategoryDetailsErrorState) {
           return MainErrorWidget(
             errorMessage: state.errorMessage ?? "",
-            onPressed: () =>
-                CategoryDetailsViewModel()..getSources(widget.category.id),
+            onPressed: () => CategoryDetailsViewModel(
+              sourceRepository: sourceRepositoryInject(),
+            )..getSources(widget.category.id),
           );
         } else if (state is CategoryDetailsSuccessState) {
           return SourceWidget(sourcesList: state.sourcesList!);

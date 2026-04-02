@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/api/dio/dio_manager.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/utils/app_color.dart';
 import '../../../../core/utils/app_text.dart';
 import '../../../../core/widget/main_error_widget.dart';
@@ -62,14 +63,15 @@ class ShowSearchDelegateScreen extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
     return BlocBuilder<SearchViewModel, SearchState>(
-      bloc: SearchViewModel()..getNewsWithSearch(query),
+      bloc: SearchViewModel(searchNewsRepository: searchNewsRepositoryInject())
+        ..getNewsWithSearch(query),
       builder: (context, state) {
         if (state is SearchLoadingState) {
           return MainLoadingWidget();
         } else if (state is SearchErrorState) {
           return MainErrorWidget(
             errorMessage: state.errorMessage!,
-            onPressed: () => DioManager().getNewsBySearch(query),
+            onPressed: () => DioManager.getInstance().getNewsBySearch(query),
           );
         } else if (state is SearchSuccessState) {
           return ListView.builder(

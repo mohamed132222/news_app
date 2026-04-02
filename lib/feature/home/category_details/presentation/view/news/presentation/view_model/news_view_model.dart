@@ -7,17 +7,9 @@ import 'package:news_app/feature/home/category_details/presentation/view/news/pr
 import '../../../../../../../../core/api/dio/dio_manager.dart';
 
 class NewsViewModel extends Cubit<NewsState> {
-  late NewsRepository newsRepository;
-  late NewsRemoteDataSource newsRemoteDataSource;
-  late DioManager dioManager;
+  NewsRepository newsRepository;
 
-  NewsViewModel() : super(NewsLoadingState()) {
-    dioManager = DioManager();
-    newsRemoteDataSource = NewsRemoteDataSourceImpl(dioManager: dioManager);
-    newsRepository = NewsRepositoryImpl(
-      newsRemoteDataSource: newsRemoteDataSource,
-    );
-  }
+  NewsViewModel({required this.newsRepository}) : super(NewsLoadingState());
 
   getNews(String sourceId) async {
     try {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/di/di.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../../core/utils/app_text.dart';
@@ -24,14 +25,17 @@ class _NewsWidgetState extends State<NewsWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewsViewModel, NewsState>(
-      bloc: NewsViewModel()..getNews(widget.source.id ?? ""),
+      bloc: NewsViewModel(newsRepository: newsRepositoryInject())
+        ..getNews(widget.source.id ?? ""),
       builder: (context, state) {
         if (state is NewsLoadingState) {
           return MainLoadingWidget();
         } else if (state is NewsErrorState) {
           return MainErrorWidget(
             errorMessage: state.errorMessage ?? "",
-            onPressed: () => NewsViewModel()..getNews(widget.source.id ?? ""),
+            onPressed: () =>
+                NewsViewModel(newsRepository: newsRepositoryInject())
+                  ..getNews(widget.source.id ?? ""),
           );
         } else if (state is NewsEmptyState) {
           return Center(

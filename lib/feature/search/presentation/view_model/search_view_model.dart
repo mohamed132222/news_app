@@ -8,17 +8,10 @@ import '../../data/repository/search_news/search_news_repository/impl/search_new
 import '../../data/repository/search_news/search_news_repository/search_news_repository.dart';
 
 class SearchViewModel extends Cubit<SearchState> {
-  late DioManager dioManager;
-  late SearchNewsDataSource searchNewsDataSource;
   late SearchNewsRepository searchNewsRepository;
 
-  SearchViewModel() : super(SearchLoadingState()) {
-    dioManager = DioManager();
-    searchNewsDataSource = SearchNewsDataSourceImpl(dioManager: dioManager);
-    searchNewsRepository = SearchNewsRepositoryImpl(
-      searchNewsDataSource: searchNewsDataSource,
-    );
-  }
+  SearchViewModel({required this.searchNewsRepository})
+    : super(SearchLoadingState());
 
   getNewsWithSearch(String query) async {
     try {

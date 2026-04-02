@@ -9,6 +9,16 @@ import '../../constant/endpoints.dart';
 import 'dio_interceptor.dart';
 
 class DioManager {
+  DioManager._();
+
+  //todo=> singleton
+  static DioManager? instance;
+
+  static DioManager getInstance() {
+    instance ??= DioManager._();
+    return instance!;
+  }
+
   static final Dio dio =
       Dio(
           BaseOptions(
