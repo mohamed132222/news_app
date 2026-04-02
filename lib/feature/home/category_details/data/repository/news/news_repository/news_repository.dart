@@ -1,0 +1,5 @@
+import 'package:news_app/feature/home/category_details/presentation/view/news/data/model/news_response.dart';
+
+abstract class NewsRepository {
+  Future<NewsResponse> getNews(String sourceId);
+}

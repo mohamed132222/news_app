@@ -42,7 +42,7 @@ class DioManager {
   //     request: true,
   //   ),
   // );
-  static Future<SourceResponse> getSources(String categoryid) async {
+  Future<SourceResponse> getSources(String categoryid) async {
     try {
       var response = await dio.get(
         Endpoints.sourceServices,
@@ -55,7 +55,7 @@ class DioManager {
     }
   }
 
-  static Future<NewsResponse> getNews(String sourceId) async {
+  Future<NewsResponse> getNews(String sourceId) async {
     try {
       var response = await dio.get(
         Endpoints.newsServices,
@@ -68,7 +68,7 @@ class DioManager {
     }
   }
 
-  static Future<NewsResponse> getNewsBySearch(String query) async {
+  Future<NewsResponse> getNewsBySearch(String query) async {
     try {
       var reponse = await dio.get(
         Endpoints.newsServices,

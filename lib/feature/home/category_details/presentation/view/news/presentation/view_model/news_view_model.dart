@@ -1,15 +1,28 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/feature/home/category_details/data/repository/news/news_data_source/remote/impl/news_remote_data_source_impl.dart';
+import 'package:news_app/feature/home/category_details/data/repository/news/news_data_source/remote/news_remote_data_source.dart';
+import 'package:news_app/feature/home/category_details/data/repository/news/news_repository/impl/news_repository_impl.dart';
+import 'package:news_app/feature/home/category_details/data/repository/news/news_repository/news_repository.dart';
 import 'package:news_app/feature/home/category_details/presentation/view/news/presentation/view_model/news_state.dart';
-
 import '../../../../../../../../core/api/dio/dio_manager.dart';
 
 class NewsViewModel extends Cubit<NewsState> {
-  NewsViewModel() : super(NewsLoadingState());
+  late NewsRepository newsRepository;
+  late NewsRemoteDataSource newsRemoteDataSource;
+  late DioManager dioManager;
+
+  NewsViewModel() : super(NewsLoadingState()) {
+    dioManager = DioManager();
+    newsRemoteDataSource = NewsRemoteDataSourceImpl(dioManager: dioManager);
+    newsRepository = NewsRepositoryImpl(
+      newsRemoteDataSource: newsRemoteDataSource,
+    );
+  }
 
   getNews(String sourceId) async {
     try {
       emit(NewsLoadingState());
-      var response = await DioManager.getNews(sourceId);
+      var response = await newsRepository.getNews(sourceId);
       if (response.status == "error") {
         //todo=> error(server)
         emit(NewsErrorState(errorMessage: response.message));

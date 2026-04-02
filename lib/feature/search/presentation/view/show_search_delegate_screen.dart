@@ -69,7 +69,7 @@ class ShowSearchDelegateScreen extends SearchDelegate {
         } else if (state is SearchErrorState) {
           return MainErrorWidget(
             errorMessage: state.errorMessage!,
-            onPressed: () => DioManager.getNewsBySearch(query),
+            onPressed: () => DioManager().getNewsBySearch(query),
           );
         } else if (state is SearchSuccessState) {
           return ListView.builder(
