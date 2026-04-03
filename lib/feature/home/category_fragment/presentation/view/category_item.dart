@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/feature/home/category_fragment/data/model/category.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../../core/provider/settings/settings_provider.dart';
 import '../../../../../core/utils/app_color.dart';
 import '../../../../../core/utils/app_text.dart';
 
@@ -12,6 +14,7 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<SettingsProvider>(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 
@@ -44,7 +47,17 @@ class CategoryItem extends StatelessWidget {
 
               Text(
                 category.title,
-                style: AppText.bold24black700.copyWith(fontSize: width * 0.07),
+                style: provider.isDark()
+                    ? TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.black,
+                      )
+                    : TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.white,
+                      ),
               ),
 
               SizedBox(height: height * 0.08),
@@ -64,16 +77,28 @@ class CategoryItem extends StatelessWidget {
                   children: [
                     Text(
                       "View All",
-                      style: AppText.medium24white500.copyWith(
-                        fontSize: width * 0.045,
-                      ),
+                      style: provider.isDark()
+                          ? TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: AppColor.white,
+                            )
+                          : TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: AppColor.black,
+                            ),
                     ),
                     SizedBox(width: width * 0.05),
 
                     CircleAvatar(
                       radius: width * 0.06,
-                      backgroundColor: AppColor.black,
-                      foregroundColor: AppColor.white,
+                      backgroundColor: provider.isDark()
+                          ? AppColor.black
+                          : AppColor.white,
+                      foregroundColor: provider.isDark()
+                          ? AppColor.white
+                          : AppColor.black,
                       child: Icon(
                         index % 2 == 0
                             ? Icons.arrow_forward_ios

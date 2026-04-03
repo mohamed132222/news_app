@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/core/utils/app_color.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../../../../../../../core/provider/settings/settings_provider.dart';
 
 class WebViewScreen extends StatefulWidget {
   String url;
@@ -23,8 +27,25 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<SettingsProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('The full Articles view')),
+      appBar: AppBar(
+        title: Text(
+          'The full Articles view',
+          style: provider.isDark()
+              ? TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColor.white,
+                )
+              : TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColor.black,
+                ),
+        ),
+      ),
       body: WebViewWidget(controller: widget.webViewController),
     );
   }

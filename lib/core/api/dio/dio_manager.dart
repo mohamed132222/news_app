@@ -65,27 +65,39 @@ class DioManager {
     }
   }
 
-  Future<NewsResponse> getNews(String sourceId) async {
+  Future<NewsResponse> getNews(
+    String sourceId, {
+    String page = "1",
+    String pageSize = "10",
+  }) async {
     try {
       var response = await dio.get(
         Endpoints.newsServices,
-        queryParameters: {"sources": "$sourceId"},
+        queryParameters: {
+          "sources": sourceId,
+          "page": page,
+          "pageSize": pageSize,
+        },
       );
-      var json = response.data;
-      return NewsResponse.fromJson(json);
+
+      return NewsResponse.fromJson(response.data);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<NewsResponse> getNewsBySearch(String query) async {
+  Future<NewsResponse> getNewsBySearch(
+    String query, {
+    String page = "1",
+    String pageSize = "10",
+  }) async {
     try {
-      var reponse = await dio.get(
+      var response = await dio.get(
         Endpoints.newsServices,
-        queryParameters: {"q": query},
+        queryParameters: {"q": query, "page": page, "pageSize": pageSize},
       );
-      var json = reponse.data;
-      return NewsResponse.fromJson(json);
+
+      return NewsResponse.fromJson(response.data);
     } catch (e) {
       rethrow;
     }

@@ -29,10 +29,16 @@ https://newsapi.org/v2/top-headlines/sources?apiKey=fd303e72a8ac4f28baf9509e65fd
   /*
 https://newsapi.org/v2/everything?q=bitcoin&apiKey=fd303e72a8ac4f28baf9509e65fd21c8
   */
-  Future<NewsResponse> getNews(String sourceId) async {
+  Future<NewsResponse> getNews(
+    String sourceId, {
+    String page = "1",
+    String pageSize = "10",
+  }) async {
     Uri url = Uri.https(ApiConstant.baseUrl, Endpoints.newsServices, {
       "apiKey": ApiConstant.apiKey,
       "sources": sourceId,
+      "page": page,
+      "pageSize": pageSize,
     });
     try {
       var response = await http.get(url);

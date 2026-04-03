@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/feature/search/presentation/view/search_result_body.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/api/dio/dio_manager.dart';
 import '../../../../core/di/di.dart';
+import '../../../../core/provider/settings/settings_provider.dart';
 import '../../../../core/utils/app_color.dart';
 import '../../../../core/utils/app_text.dart';
 import '../../../../core/widget/main_error_widget.dart';
@@ -12,8 +15,10 @@ import '../view_model/search_state.dart';
 import '../view_model/search_view_model.dart';
 
 class ShowSearchDelegateScreen extends SearchDelegate {
+  late var provider;
   @override
   ThemeData appBarTheme(BuildContext context) {
+    provider = Provider.of<SettingsProvider>(context);
     final ThemeData theme = Theme.of(context);
 
     return theme.copyWith(
@@ -22,11 +27,16 @@ class ShowSearchDelegateScreen extends SearchDelegate {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(16),
-          side: BorderSide(width: 2, color: AppColor.white),
+          side: BorderSide(
+            width: 2,
+            color: provider.isDark() ? AppColor.white : AppColor.black,
+          ),
         ),
-        iconTheme: IconThemeData(color: AppColor.white),
+        iconTheme: IconThemeData(
+          color: provider.isDark() ? AppColor.white : AppColor.black,
+        ),
         titleTextStyle: theme.textTheme.titleLarge?.copyWith(
-          color: AppColor.white,
+          color: provider.isDark() ? AppColor.white : AppColor.black,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -45,7 +55,11 @@ class ShowSearchDelegateScreen extends SearchDelegate {
           query = '';
           showSuggestions(context);
         },
-        icon: Icon(Icons.clear, color: AppColor.white, size: 25),
+        icon: Icon(
+          Icons.clear,
+          color: provider.isDark() ? AppColor.white : AppColor.black,
+          size: 25,
+        ),
       ),
     ];
   }
@@ -55,33 +69,22 @@ class ShowSearchDelegateScreen extends SearchDelegate {
     // TODO: implement buildLeading
     return IconButton(
       onPressed: () => close(context, null),
-      icon: Icon(Icons.arrow_back, color: AppColor.white, size: 25),
+      icon: Icon(
+        Icons.arrow_back,
+        color: provider.isDark() ? AppColor.white : AppColor.black,
+        size: 25,
+      ),
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    return BlocBuilder<SearchViewModel, SearchState>(
-      bloc: SearchViewModel(searchNewsRepository: searchNewsRepositoryInject())
-        ..getNewsWithSearch(query),
-      builder: (context, state) {
-        if (state is SearchLoadingState) {
-          return MainLoadingWidget();
-        } else if (state is SearchErrorState) {
-          return MainErrorWidget(
-            errorMessage: state.errorMessage!,
-            onPressed: () => DioManager.getInstance().getNewsBySearch(query),
-          );
-        } else if (state is SearchSuccessState) {
-          return ListView.builder(
-            itemBuilder: (context, index) =>
-                NewsItem(news: state.newsList![index]),
-            itemCount: state.newsList!.length,
-          );
-        }
-        return Container();
-      },
+    return BlocProvider(
+      key: ValueKey(query),
+      create: (_) =>
+          SearchViewModel(searchNewsRepository: searchNewsRepositoryInject())
+            ..getNewsWithSearch(query),
+      child: SearchResultBody(query: query),
     );
   }
 
@@ -89,7 +92,10 @@ class ShowSearchDelegateScreen extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
       return Center(
-        child: Text("Search for news...", style: AppText.medium24white500),
+        child: Text(
+          "Search for news...",
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
       );
     }
     return buildResults(context);

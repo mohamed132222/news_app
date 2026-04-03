@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/feature/home/category_details/presentation/view/source/presentation/view/source_item.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../../../../../core/provider/settings/settings_provider.dart';
 import '../../../../../../../../core/utils/app_color.dart';
 import '../../../news/presentation/view/news_widget.dart';
 import '../../data/model/source_response.dart';
@@ -19,6 +21,7 @@ class _SourceWidgetState extends State<SourceWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<SettingsProvider>(context);
     return DefaultTabController(
       length: widget.sourcesList.length,
       child: Column(
@@ -37,7 +40,7 @@ class _SourceWidgetState extends State<SourceWidget> {
             }).toList(),
             tabAlignment: TabAlignment.start,
             isScrollable: true,
-            indicatorColor: AppColor.white,
+            indicatorColor: provider.isDark() ? AppColor.white : AppColor.black,
             dividerColor: Colors.transparent,
           ),
           Expanded(

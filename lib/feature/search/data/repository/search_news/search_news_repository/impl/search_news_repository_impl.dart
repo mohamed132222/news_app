@@ -9,7 +9,15 @@ class SearchNewsRepositoryImpl implements SearchNewsRepository {
   SearchNewsRepositoryImpl({required this.searchNewsDataSource});
 
   @override
-  Future<NewsResponse> getNewsWithSearch(String query) {
-    return searchNewsDataSource.getNewsWithSearch(query);
+  Future<NewsResponse> getNewsWithSearch(
+    String query, {
+    page = "1",
+    pageSize = "10",
+  }) {
+    return searchNewsDataSource.getNewsWithSearch(
+      query,
+      page: page,
+      pageSize: pageSize,
+    );
   }
 }

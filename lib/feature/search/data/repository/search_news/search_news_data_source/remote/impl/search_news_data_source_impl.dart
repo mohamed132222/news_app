@@ -9,8 +9,16 @@ class SearchNewsDataSourceImpl implements SearchNewsDataSource {
   SearchNewsDataSourceImpl({required this.dioManager});
 
   @override
-  Future<NewsResponse> getNewsWithSearch(String query) async {
-    var response = await dioManager.getNewsBySearch(query);
+  Future<NewsResponse> getNewsWithSearch(
+    String query, {
+    page = "1",
+    pageSize = "10",
+  }) async {
+    var response = await dioManager.getNewsBySearch(
+      query,
+      page: page,
+      pageSize: pageSize,
+    );
     return response;
   }
 }
@@ -21,7 +29,11 @@ class SearchNewsDataSourceImpl1 implements SearchNewsDataSource {
   SearchNewsDataSourceImpl1({required this.apiManager});
 
   @override
-  Future<NewsResponse> getNewsWithSearch(String query) async {
+  Future<NewsResponse> getNewsWithSearch(
+    String query, {
+    page = "1",
+    pageSize = "10",
+  }) async {
     var response = await apiManager.getNewsWithSearch(query);
     return response;
   }

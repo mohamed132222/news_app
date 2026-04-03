@@ -9,8 +9,16 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   NewsRemoteDataSourceImpl({required this.dioManager});
 
   @override
-  Future<NewsResponse> getNews(String sourceId) async {
-    var reponse = await dioManager.getNews(sourceId);
+  Future<NewsResponse> getNews(
+    String sourceId, {
+    String page = "1",
+    String pageSize = "10",
+  }) async {
+    var reponse = await dioManager.getNews(
+      sourceId,
+      page: page,
+      pageSize: pageSize,
+    );
     return reponse;
   }
 }
@@ -21,7 +29,11 @@ class NewsRemoteDataSourceImpl1 implements NewsRemoteDataSource {
   NewsRemoteDataSourceImpl1({required this.apiManager});
 
   @override
-  Future<NewsResponse> getNews(String sourceId) async {
+  Future<NewsResponse> getNews(
+    String sourceId, {
+    String page = "1",
+    String pageSize = "10",
+  }) async {
     var reponse = await apiManager.getNews(sourceId);
     return reponse;
   }

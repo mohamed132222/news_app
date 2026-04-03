@@ -1,62 +1,90 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/feature/home/category_details/data/repository/news/news_data_source/remote/impl/news_remote_data_source_impl.dart';
-import 'package:news_app/feature/home/category_details/data/repository/news/news_data_source/remote/news_remote_data_source.dart';
-import 'package:news_app/feature/home/category_details/data/repository/news/news_repository/impl/news_repository_impl.dart';
-import 'package:news_app/feature/home/category_details/data/repository/news/news_repository/news_repository.dart';
-import 'package:news_app/feature/home/category_details/presentation/view/news/presentation/view_model/news_state.dart';
-import '../../../../../../../../core/api/dio/dio_manager.dart';
+import '../../../../../data/repository/news/news_repository/news_repository.dart';
+import 'news_state.dart';
 
 class NewsViewModel extends Cubit<NewsState> {
-  NewsRepository newsRepository;
+  final NewsRepository newsRepository;
 
-  NewsViewModel({required this.newsRepository}) : super(NewsLoadingState());
+  NewsViewModel({required this.newsRepository})
+    : super(NewsState(newsList: []));
 
-  getNews(String sourceId) async {
+  int page = 1;
+  final int pageSize = 10;
+
+  bool isFetching = false;
+
+  Future<void> getNews(String sourceId) async {
+    if (isFetching) return;
+
+    isFetching = true;
+
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+
     try {
-      emit(NewsLoadingState());
-      var response = await newsRepository.getNews(sourceId);
+      final response = await newsRepository.getNews(
+        sourceId,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+      );
+
       if (response.status == "error") {
-        //todo=> error(server)
-        emit(NewsErrorState(errorMessage: response.message));
+        emit(state.copyWith(isLoading: false, errorMessage: response.message));
+        return;
       }
-      if (response.articles == null || response.articles!.isEmpty) {
-        emit(NewsEmptyState());
-      } else {
-        //todo=> success
-        emit(NewsSuccessState(newsList: response.articles));
-      }
+
+      final newList = response.articles ?? [];
+
+      emit(
+        state.copyWith(
+          newsList: newList,
+          isLoading: false,
+          hasMore: newList.length == pageSize,
+        ),
+      );
     } catch (e) {
-      //todo => error(client)
-      emit(NewsErrorState(errorMessage: e.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
+
+    isFetching = false;
+  }
+
+  Future<void> loadMore(String sourceId) async {
+    if (isFetching || !state.hasMore) return;
+
+    isFetching = true;
+
+    emit(state.copyWith(isLoadingMore: true));
+
+    try {
+      page++;
+
+      final response = await newsRepository.getNews(
+        sourceId,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+      );
+
+      final newList = response.articles ?? [];
+
+      emit(
+        state.copyWith(
+          newsList: [...state.newsList, ...newList],
+          isLoadingMore: false,
+          hasMore: newList.length == pageSize,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(isLoadingMore: false, errorMessage: e.toString()));
+    }
+
+    isFetching = false;
+  }
+
+  void reset(String sourceId) {
+    page = 1;
+
+    emit(NewsState(newsList: []));
+
+    getNews(sourceId);
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:news_app/core/api/dio/dio_manager.dart';
-//
-// import '../../data/model/news_response.dart';
-//
-// class NewsViewModel extends ChangeNotifier {
-//   List<News>? newsList;
-//   String? errorMessage;
-//   getNews(String sourceId) async {
-//     newsList = null;
-//     errorMessage = null;
-//     notifyListeners();
-//     try {
-//       var response = await DioManager.getNews(sourceId);
-//       if (response.status == "error") {
-//         //todo server=>error
-//         errorMessage = response.message;
-//       } else {
-//         //todo server=>ok
-//         newsList = response.articles;
-//       }
-//     } catch (e) {
-//       //todo client=>error
-//       errorMessage = e.toString();
-//     }
-//     notifyListeners();
-//   }
-// }

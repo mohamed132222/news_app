@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/core/utils/app_color.dart';
 
 import '../../core/utils/app_text.dart';
 
@@ -16,8 +17,14 @@ class DrawerItem extends StatelessWidget {
       child: Row(
         spacing: width * .03,
         children: [
-          Image.asset(image, width: width * .05),
-          Text(title, style: AppText.bold20white700),
+          Image.asset(image, width: width * .06),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+              color: AppColor.white,
+              fontSize: 20,
+            ),
+          ),
         ],
       ),
     );

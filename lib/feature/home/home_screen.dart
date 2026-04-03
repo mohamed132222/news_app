@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/core/utils/app_color.dart';
 
 import 'package:news_app/feature/home/category_fragment/data/model/category.dart';
+import 'package:provider/provider.dart';
 
-import '../../core/utils/app_color.dart';
-import '../../core/utils/app_text.dart';
+import '../../core/provider/settings/settings_provider.dart';
 import '../drawer/drawer_home.dart';
 import '../search/presentation/view/show_search_delegate_screen.dart';
 import 'category_details/presentation/view/category_details_screen.dart';
@@ -17,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<SettingsProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -25,12 +28,22 @@ class _HomeScreenState extends State<HomeScreen> {
               context: context,
               delegate: ShowSearchDelegateScreen(),
             ),
-            icon: Icon(Icons.search, size: 25, color: AppColor.white),
+            icon: Icon(Icons.search, size: 25),
           ),
         ],
         title: Text(
           selectedCategory == null ? "Home" : selectedCategory?.title ?? "",
-          style: AppText.medium20white500,
+          style: provider.isDark()
+              ? TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.white,
+                )
+              : TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                ),
         ),
       ),
       drawer: Drawer(child: DrawerHome(OnDrawerClick: onDrawerClick)),

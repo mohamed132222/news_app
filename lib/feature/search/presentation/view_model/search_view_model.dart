@@ -1,32 +1,90 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/core/api/dio/dio_manager.dart';
-import 'package:news_app/feature/search/presentation/view_model/search_state.dart';
-
-import '../../data/repository/search_news/search_news_data_source/remote/impl/search_news_data_source_impl.dart';
-import '../../data/repository/search_news/search_news_data_source/remote/search_news_data_source.dart';
-import '../../data/repository/search_news/search_news_repository/impl/search_news_repository_impl.dart';
+import 'search_state.dart';
 import '../../data/repository/search_news/search_news_repository/search_news_repository.dart';
 
 class SearchViewModel extends Cubit<SearchState> {
-  late SearchNewsRepository searchNewsRepository;
+  final SearchNewsRepository searchNewsRepository;
 
   SearchViewModel({required this.searchNewsRepository})
-    : super(SearchLoadingState());
+    : super(SearchState(newsList: []));
 
-  getNewsWithSearch(String query) async {
+  int page = 1;
+  final int pageSize = 10;
+
+  bool isFetching = false;
+
+  Future<void> getNewsWithSearch(String query) async {
+    if (isFetching) return;
+
+    isFetching = true;
+
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+
     try {
-      emit(SearchLoadingState());
-      var response = await searchNewsRepository.getNewsWithSearch(query);
+      final response = await searchNewsRepository.getNewsWithSearch(
+        query,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+      );
+
       if (response.status == "error") {
-        //todo=> error(server)
-        emit(SearchErrorState(errorMessage: response.message));
-      } else {
-        //todo=> success
-        emit(SearchSuccessState(newsList: response.articles));
+        emit(state.copyWith(isLoading: false, errorMessage: response.message));
+        return;
       }
+
+      final newList = response.articles ?? [];
+
+      emit(
+        state.copyWith(
+          newsList: newList,
+          isLoading: false,
+          hasMore: newList.length == pageSize,
+        ),
+      );
     } catch (e) {
-      //todo => error(client)
-      emit(SearchErrorState(errorMessage: e.toString()));
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
+
+    isFetching = false;
+  }
+
+  Future<void> loadMore(String query) async {
+    if (isFetching || !state.hasMore) return;
+
+    isFetching = true;
+
+    emit(state.copyWith(isLoadingMore: true));
+
+    try {
+      page++;
+
+      final response = await searchNewsRepository.getNewsWithSearch(
+        query,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+      );
+
+      final newList = response.articles ?? [];
+
+      emit(
+        state.copyWith(
+          newsList: [...state.newsList, ...newList],
+          isLoadingMore: false,
+          hasMore: newList.length == pageSize,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(isLoadingMore: false, errorMessage: e.toString()));
+    }
+
+    isFetching = false;
+  }
+
+  void reset(String query) {
+    page = 1;
+
+    emit(SearchState(newsList: []));
+
+    getNewsWithSearch(query);
   }
 }

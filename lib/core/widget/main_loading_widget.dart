@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/settings/settings_provider.dart';
 import '../utils/app_color.dart';
 
 class MainLoadingWidget extends StatelessWidget {
@@ -7,6 +9,12 @@ class MainLoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: CircularProgressIndicator(color: AppColor.white));
+    var provider = Provider.of<SettingsProvider>(context);
+
+    return Center(
+      child: CircularProgressIndicator(
+        color: provider.isDark() ? AppColor.white : AppColor.black,
+      ),
+    );
   }
 }
